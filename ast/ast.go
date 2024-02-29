@@ -20,15 +20,8 @@ type Program struct {
 	Statements []Statement
 }
 
-type Identifier struct {
-	Token token.Token // token.IDENT token
-	Value string
-}
-
-func (i *Identifier) ExpressionNode() {}
-func (i *Identifier) TokenLiteral() string {
-	return i.Token.Literal
-}
+// assert LetStatement implementation
+var _ Node = (*LetStatement)(nil)
 
 type LetStatement struct {
 	Token token.Token // token.LET token
@@ -40,6 +33,34 @@ func (ls *LetStatement) StatementNode() {}
 
 func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
+}
+
+// assert Identifier implementation
+var _ Expression = (*Identifier)(nil)
+
+type Identifier struct {
+	Token token.Token // token.IDENT token
+	Value string
+}
+
+// Assert ReturnStatement implementation
+var _ Statement = (*ReturnStatement)(nil)
+
+type ReturnStatement struct {
+	Token token.Token // The 'return' key word token
+	Value Expression
+}
+
+func (rs *ReturnStatement) StatementNode() {}
+
+func (rs *ReturnStatement) TokenLiteral() string {
+	return rs.Token.Literal
+}
+
+func (i *Identifier) ExpressionNode() {}
+
+func (i *Identifier) TokenLiteral() string {
+	return i.Token.Literal
 }
 
 func (p *Program) TokenLiteral() string {
