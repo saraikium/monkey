@@ -1,9 +1,10 @@
 package parser
 
 import (
+	"testing"
+
 	"github.com/saraikium/monkey/ast"
 	"github.com/saraikium/monkey/lexer"
-	"testing"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -67,6 +68,38 @@ return 993322;
 			t.Errorf("returnStmt.TokenLiteral not 'return', got %q",
 				returnStmt.TokenLiteral())
 		}
+	}
+
+}
+
+func TestIdentifierExpressions(t *testing.T) {
+	input := "foobar;"
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParseErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("Wrong number of statements in the program. Expected 1 got %d.", len(program.Statements))
+	}
+
+	statement, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	ident, ok := statement.Expression.(*ast.Identifier)
+
+	if !ok {
+		t.Fatalf("exp not ast.Identifier, got %T", statement.Expression)
+	}
+
+	if ident.Value != "foobar" {
+		t.Errorf("ident.Value not %s. got=%s", "foobar", ident.Value)
+	}
+	if ident.TokenLiteral() != "foobar" {
+		t.Errorf("ident.TokenLiteral not %s. got=%s", "foobar", ident.TokenLiteral())
 	}
 
 }
