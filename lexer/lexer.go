@@ -3,10 +3,10 @@ package lexer
 import "github.com/saraikium/monkey/token"
 
 type Lexer struct {
-	input        string
-	position     int
-	readPosition int
-	ch           byte
+	input        string // Input source code.
+	position     int    // Position of the last character that has been read
+	readPosition int    // Position in the input string where the next character will be read from
+	ch           byte   // The character that has been read.
 }
 
 func New(input string) *Lexer {
