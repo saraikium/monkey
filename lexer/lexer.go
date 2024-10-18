@@ -3,10 +3,10 @@ package lexer
 import "github.com/saraikium/monkey/token"
 
 type Lexer struct {
-	input        string // Input source code.
-	position     int    // Position of the last character that has been read
-	readPosition int    // Position in the input string where the next character will be read from
-	ch           byte   // The character that has been read.
+	input            string // Input source code.
+	position         int    // Position of the last character that has been read
+	nextCharPosition int    // Position in the input string where the next character will be read from
+	ch               byte   // The character that has been read.
 }
 
 func New(input string) *Lexer {
@@ -16,13 +16,13 @@ func New(input string) *Lexer {
 }
 
 func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
+	if l.nextCharPosition >= len(l.input) {
 		l.ch = 0
 	} else {
-		l.ch = l.input[l.readPosition]
+		l.ch = l.input[l.nextCharPosition]
 	}
-	l.position = l.readPosition
-	l.readPosition += 1
+	l.position = l.nextCharPosition
+	l.nextCharPosition += 1
 }
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
@@ -123,10 +123,10 @@ func (l *Lexer) NextToken() token.Token {
 
 // Peek the next character in the source code but don't increment the readPosition
 func (l *Lexer) peekChar() byte {
-	if l.readPosition >= len(l.input) {
+	if l.nextCharPosition >= len(l.input) {
 		return 0
 	} else {
-		return l.input[l.readPosition]
+		return l.input[l.nextCharPosition]
 	}
 }
 
