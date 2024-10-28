@@ -156,8 +156,8 @@ func (il *IntegerLiteral) String() string { return il.Token.Literal }
 var _ Expression = (*PrefixExpression)(nil)
 
 type PrefixExpression struct {
-	Token    token.Token
 	Operator string
+	Token    token.Token // The token eg '!'
 	Right    Expression
 }
 

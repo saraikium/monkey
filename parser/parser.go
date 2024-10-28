@@ -11,8 +11,7 @@ import (
 
 // precedences
 const (
-	_ int = iota
-	LOWEST
+	LOWEST      = iota
 	EQUALS      // ==
 	LESSGREATER // > or <
 	SUM         // +
@@ -197,24 +196,22 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	prefix := p.prefixParseFns[p.curToken.Type]
+	prefixParseFunc := p.prefixParseFns[p.curToken.Type]
 
-	if prefix == nil {
+	if prefixParseFunc == nil {
 		p.noPrefixParseFnError(p.curToken.Type)
 		return nil
 	}
 
-	leftExp := prefix()
+	leftExp := prefixParseFunc()
 
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infix := p.infixParseFns[p.peekToken.Type]
-
-		if infix == nil {
+		infixParseFunc := p.infixParseFns[p.peekToken.Type]
+		if infixParseFunc == nil {
 			return leftExp
-
 		}
 		p.NextToken()
-		leftExp = infix(leftExp)
+		leftExp = infixParseFunc(leftExp)
 	}
 	return leftExp
 
@@ -252,7 +249,11 @@ func (p *Parser) parseIdentifier() ast.Expression {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
-	exp := &ast.InfixExpression{Token: p.curToken, Operator: p.curToken.Literal, Left: left}
+	exp := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
 	precedence := p.curPrecedence()
 	p.NextToken()
 	exp.Right = p.parseExpression(precedence)
