@@ -203,7 +203,7 @@ var _ Expression = (*Boolean)(nil)
 
 type Boolean struct {
 	Token token.Token
-	value bool
+	Value bool
 }
 
 func (b *Boolean) ExpressionNode() {}
